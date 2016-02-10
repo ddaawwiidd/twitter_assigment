@@ -110,7 +110,7 @@ class User
 
     public function __construct($newId, $newName, $newEmail, $newDescription)
     {
-        $this->id = $newId;
+        $this->id = intval($newId);
         $this->name = $newName;
         $this->email = $newEmail;
         $this->setDescription($newDescription);
@@ -145,7 +145,7 @@ class User
 
     }
 
-    public function saveToDB ()
+    public function saveToDB()
     {
         $sql = "UPDATE Users SET description='$this->description' WHERE id = $this->id";
         $result = self::$connection->query($sql);
@@ -159,11 +159,19 @@ class User
     public function loadAllTweets()
     {
         $ret = [];
-
-        //TODO:finish this function
-        //TODO:It should return table of Tweets created by this user (date DESC)
-
-
+        $sql = "SELECT * FROM Tweets WHERE id_user = ($this->id) ORDER BY post_date DESC";
+        $result = self::$connection->query($sql);
+        if($result === true)
+        {
+            if($result->num_rows>0)
+            {
+                while($row = $result->fetch_assoc())
+                {
+                    $tweet = new Tweet($row['id'], $row['id_user'], $row['tweet_body'], $row['post_date']);
+                    $ret[] = $tweet;
+                }
+            }
+        }
         return $ret;
     }
 
