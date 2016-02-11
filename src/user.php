@@ -145,7 +145,7 @@ class User
 
     }
 
-    public function saveToDB()
+    public function changeDescription()
     {
         $sql = "UPDATE Users SET description='$this->description' WHERE id = $this->id";
         $result = self::$connection->query($sql);
@@ -163,7 +163,7 @@ class User
         $result = self::$connection->query($sql);
         if($result === true)
         {
-            if($result->num_rows>0)
+            if($result->num_rows > 0)
             {
                 while($row = $result->fetch_assoc())
                 {

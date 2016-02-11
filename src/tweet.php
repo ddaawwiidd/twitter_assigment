@@ -3,7 +3,7 @@
  * CREATE TABLE Tweets(
  * id int AUTO_INCREMENT,
  * id_user int,
- * tweet_body varchar(255),
+ * tweet_body varchar(140),
  * post_date date,
  * PRIMARY KEY(id),
  * FOREIGN KEY(id_user) REFERENCES Users (id) [ON DELETE CASCADE]
@@ -21,7 +21,7 @@ class Tweet
     static public function GetAllTweets()
     {
         $ret = [];
-        $sql = "SELECT * FROM Tweets";
+        $sql = "SELECT * FROM Tweets ORDER BY post_date DESC";
         $result = self::$connection->query($sql);
 
         if($result != false)
@@ -38,8 +38,9 @@ class Tweet
         return $ret;
     }
 
-    static public function createTweet($newIdUser, $newTweetBody)
+    static public function CreateTweet($newIdUser, $newTweetBody)
     {
+
         $sql = "INSERT INTO Tweets (id_user, tweet_body, post_date) VALUES ('$newIdUser','$newTweetBody', now())";
         $result = self::$connection->query($sql);
         if($result === true)
@@ -50,7 +51,7 @@ class Tweet
         return false;
     }
 
-    static public function showTweetById($id)
+    static public function ShowTweetById($id)
     {
         $sql = "SELECT * FROM Tweets WHERE id = $id";
         $result = self::$connection->query($sql);
@@ -72,8 +73,8 @@ class Tweet
 
     public function __construct($newId, $newIdUser, $newTweetBody, $newPostDate)
     {
-        $this->id = $newId;
-        $this->idUser = $newIdUser;
+        $this->id = intval($newId);
+        $this->idUser = intval($newIdUser);
         $this->setTweetBody($newTweetBody);
         $this->postDate = $newPostDate;
     }
@@ -106,7 +107,7 @@ class Tweet
         }
     }
 
-    public function saveToDB()
+    public function updateTweet()
     {
         $sql = "UPDATE Tweets SET tweet_body='$this->tweetBody' WHERE id = $this->id";
         $result = self::$connection->query($sql);
@@ -117,22 +118,8 @@ class Tweet
         return false;
     }
 
-    public function loadAllComments($id)
+    public function getAllComments()
     {
-        $ret = [];
-        $sql = "SELECT * FROM Comments WHERE Comments.id_user=Users.id AND id_tweet = $id ORDER BY comment_date DESC";
-        $result = self::$connection->query($sql);
-        if($result === true)
-        {
-            if($result->num_rows>0)
-            {
-                while($row = $result->fetch_assoc())
-                {
-                    $comment = new Tweet($row['id'], $row['name'], $row['id_tweet'], $row['comment_body'], $row['post_date']);
-                    $ret[] = $comment;
-                }
-            }
-        }
-        return $ret;
+        //TODO create function
     }
 }
