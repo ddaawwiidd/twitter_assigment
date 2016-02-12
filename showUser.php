@@ -20,6 +20,9 @@ if($userToShow != false)
 {
     echo("<h1>{$userToShow->getName()}</h1>");
     echo("{$userToShow->getDescription()}<br>");
+    echo("<a href='descriptionChange.php'>Edit description</a><br>");
+    echo("<a href='pswChange.php'>Password change</a><br>");
+
 
     if($userToShow->getId() === $_SESSION['userId'])
     {
@@ -34,7 +37,12 @@ if($userToShow != false)
 
     foreach($userToShow->loadAllTweets() as $tweet)
     {
-        echo("{$tweet->getTweetBody()}<br>");
+        echo("<a href ='showTweet.php?id={$tweet->getId()}'>{$tweet->getTweetBody()}</a><br>");
+        echo("{$tweet->getPostDate()}<br>");
+        $commentsNumber = count($tweet->getAllComments());
+        echo("Comments: $commentsNumber <br>");
+        echo("<a href='editTweet.php?id={$tweet->getId()}'> Edit</a><br>");
+        echo("<a href='deleteTweet.php?id={$tweet->getId()}'> Delete</a><br>");
     }
 }
 else
@@ -50,7 +58,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST')
         $idUser = $_SESSION['userId'];
         $tweetBody = $_POST['tweet_text'];
         $tweet = Tweet::CreateTweet($idUser, $tweetBody);
-        header("location: showUser.php");
 
     }
     else

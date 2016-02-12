@@ -2,6 +2,9 @@
 session_start();
 require_once (dirname(__FILE__)."/config.php");
 require_once (dirname(__FILE__)."/user.php");
+require_once (dirname(__FILE__)."/tweet.php");
+require_once (dirname(__FILE__)."/comment.php");
+
 
 $conn = new mysqli($dbHost, $dbUsername, $dbPassword, $dbBaseName);
 
@@ -11,5 +14,9 @@ if ($conn->connect_errno)
 }
 
 User::SetConnection($conn);
+Tweet::SetConnection($conn);
+Comment::SetConnection($conn);
+
+
 
 ?>

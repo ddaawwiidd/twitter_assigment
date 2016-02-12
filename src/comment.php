@@ -20,13 +20,14 @@ class Comment
         Comment::$connection = $newConnection;
     }
 
-    static public function createComment($newIdUser, $newIdTweet, $newCommentBody)
+    static public function CreateComment($newIdUser, $newIdTweet, $newCommentBody)
     {
-        $sql = "INSERT INTO Comments (id_user, id_tweet, comment_body, comment_date) VALUES ('$newIdUser','$newIdTweet','$newCommentBody', now())";
+        $newCommentDate = date('Y-m-d H:i:s', time());
+        $sql = "INSERT INTO Comments (id_user, id_tweet, comment_body, comment_date) VALUES ('$newIdUser','$newIdTweet','$newCommentBody','$newCommentDate')";
         $result = self::$connection->query($sql);
-        if($result === true)
+        if($result == true)
         {
-            $newComment = new Comment(self::$connection->insert_id, $newIdUser, $newIdTweet, $newCommentBody);
+            $newComment = new Comment(self::$connection->insert_id, $newIdUser, $newIdTweet, $newCommentBody, $newCommentDate);
             return $newComment;
         }
         return false;
@@ -36,7 +37,7 @@ class Comment
     {
         $sql = "SELECT * FROM Comments WHERE id = $id";
         $result = self::$connection->query($sql);
-        if($result === true)
+        if($result != false)
         {
             if($result->num_row == 1)
             {
@@ -47,39 +48,19 @@ class Comment
         }
     }
 
-    static public function GetAllComments()
-    {
-        $ret = [];
-        $sql = "SELECT * FROM Comments";
-        $result = self::$connection->query($sql);
-
-        if($result != false)
-        {
-            if($result->num_rows > 0)
-            {
-                while($row = $result->fetch_assoc())
-                {
-                    $comment = new Comment($row["id"], $row["id_user"],$row["id_tweet"], $row["comment_body"], $row["comment_date"]);
-                    $ret[] = $comment;
-                }
-            }
-        }
-        return $ret;
-    }
-
     private $id;
     private $idUser;
     private $idTweet;
     private $commentDate;
     private $commentBody;
 
-    public function __construct($newId, $newIdUser, $newIdTweet, $newCommentDate, $newCommentBody)
+    public function __construct($newId, $newIdUser, $newIdTweet, $newCommentBody, $newCommentDate)
     {
-        $this->id = $newId;
-        $this->idUser = $newIdUser;
-        $this->idTweet = $newIdTweet;
-        $this->commentDate = $newCommentDate;
-        $this->commentBody = $newCommentBody;
+        $this->id = intval($newId);
+        $this->setIdUser($newIdUser);
+        $this->setIdTweet($newIdTweet);
+        $this->setCommentBody($newCommentBody);
+        $this->setCommentDate($newCommentDate);
     }
 
     public function getId()
@@ -130,15 +111,5 @@ class Comment
         }
     }
 
-    public function saveToDB()
-    {
-        $sql = "UPDATE Comments SET comment_body='$this->commentBody' WHERE id = $this->id";
-        $result = self::$connection->query($sql);
-        if($result === true)
-        {
-            return true;
-        }
-        return false;
-    }
 
 }

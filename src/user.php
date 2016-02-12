@@ -145,9 +145,9 @@ class User
 
     }
 
-    public function changeDescription()
+    public function changeDescription($newDescription)
     {
-        $sql = "UPDATE Users SET description='$this->description' WHERE id = $this->id";
+        $sql = "UPDATE Users SET description='$newDescription' WHERE id = $this->id";
         $result = self::$connection->query($sql);
         if($result === true)
         {
@@ -161,7 +161,7 @@ class User
         $ret = [];
         $sql = "SELECT * FROM Tweets WHERE id_user = ($this->id) ORDER BY post_date DESC";
         $result = self::$connection->query($sql);
-        if($result === true)
+        if($result != false)
         {
             if($result->num_rows > 0)
             {

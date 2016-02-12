@@ -18,6 +18,20 @@ class Tweet
         Tweet::$connection = $newConnection;
     }
 
+    static public function CreateTweet($newIdUser, $newTweetBody)
+    {
+
+        $newPostDate = date('Y-m-d H:i:s', time());
+        $sql = "INSERT INTO Tweets (id_user, tweet_body, post_date) VALUES ('$newIdUser','$newTweetBody','$newPostDate')";
+        $result = self::$connection->query($sql);
+        if($result == true)
+        {
+            $newTweet = new Tweet(self::$connection->insert_id, $newIdUser, $newTweetBody, $newPostDate);
+            return $newTweet;
+        }
+        return false;
+    }
+
     static public function GetAllTweets()
     {
         $ret = [];
@@ -38,32 +52,21 @@ class Tweet
         return $ret;
     }
 
-    static public function CreateTweet($newIdUser, $newTweetBody)
-    {
-
-        $sql = "INSERT INTO Tweets (id_user, tweet_body, post_date) VALUES ('$newIdUser','$newTweetBody', now())";
-        $result = self::$connection->query($sql);
-        if($result === true)
-        {
-            $newTweet = new Tweet(self::$connection->insert_id, $newIdUser, $newTweetBody);
-            return $newTweet;
-        }
-        return false;
-    }
-
     static public function ShowTweetById($id)
     {
         $sql = "SELECT * FROM Tweets WHERE id = $id";
         $result = self::$connection->query($sql);
-        if($result === true)
+
+        if($result != false)
         {
-            if($result->num_row === 1)
+            if($result->num_rows == 1)
             {
                 $row = $result->fetch_assoc();
-                $tweet = new Tweet($row['id'], $row['id_user'], $row['tweet_body'], $row['post_date']);
-                return $tweet;
+                $newTweet = new Tweet($row['id'], $row['id_user'], $row['tweet_body'], $row['post_date']);
+                return $newTweet;
             }
         }
+        return false;
     }
 
     private $id;
@@ -107,11 +110,13 @@ class Tweet
         }
     }
 
-    public function updateTweet()
+
+
+    public function updateTweet($newTweetBody)
     {
-        $sql = "UPDATE Tweets SET tweet_body='$this->tweetBody' WHERE id = $this->id";
+        $sql = "UPDATE Tweets SET tweet_body='$newTweetBody' WHERE id = $this->id";
         $result = self::$connection->query($sql);
-        if($result === true)
+        if($result != false)
         {
             return true;
         }
@@ -120,6 +125,27 @@ class Tweet
 
     public function getAllComments()
     {
-        //TODO create function
+        $ret = [];
+        $sql = "SELECT * FROM Comments WHERE id_tweet =$this->id ORDER BY comment_date DESC";
+        $result = self::$connection->query($sql);
+        if ($result != false)
+        {
+            if ($result->num_rows > 0)
+            {
+                while ($row = $result->fetch_assoc())
+                {
+                    $comment = new Comment($row['id'], $row['id_user'], $row['id_tweet'], $row['comment_body'], $row['comment_date']);
+                    $ret[] = $comment;
+                }
+            }
+        }
+        return $ret;
     }
-}
+
+    public function removeTweet()
+    {
+        $sql = "DELETE FROM Tweets WHERE id =$this->id";
+        self::$connection->query($sql);
+    }
+
+    }
