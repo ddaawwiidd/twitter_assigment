@@ -40,5 +40,5 @@ echo("
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST')
 {
-    $user->changePassword(($_POST['oldpassword']), ($_POST['password1']), ($_POST['password2']));
+    $user->changePassword(($_POST['oldpassword']), ($_POST['password1']), ($_POST['password2']));//check
 }

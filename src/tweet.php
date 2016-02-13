@@ -26,7 +26,7 @@ class Tweet
         $result = self::$connection->query($sql);
         if($result == true)
         {
-            $newTweet = new Tweet(self::$connection->insert_id, $newIdUser, $newTweetBody, $newPostDate);
+            $newTweet = new Tweet(self::$connection->insert_id, $newIdUser, $newTweetBody, $newPostDate);//double check names of var
             return $newTweet;
         }
         return false;

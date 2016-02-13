@@ -110,6 +110,4 @@ class Comment
             return $this->commentBody = $newCommentBody;
         }
     }
-
-
 }

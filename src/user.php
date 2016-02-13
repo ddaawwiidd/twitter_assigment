@@ -45,7 +45,7 @@ class User
         return false;
     }
 
-    static public function LogInUser ($email, $password)
+    static public function LogInUser($email, $password)
     {
         $sql = "SELECT * FROM Users WHERE email LIKE '$email'";
         $result = self::$connection->query($sql);
@@ -66,7 +66,7 @@ class User
         return false;
     }
 
-    static public function GetUserById ($idToLoad)
+    static public function GetUserById($idToLoad)
     {
         $sql = "SELECT * FROM Users WHERE id = $idToLoad";
         $result = self::$connection->query($sql);
@@ -83,7 +83,7 @@ class User
         return false;
     }
 
-    static public function GetAllUsers ()
+    static public function GetAllUsers()
     {
         $ret = [];
         $sql = "SELECT * FROM Users";
@@ -175,25 +175,42 @@ class User
         return $ret;
     }
 
-    public function loadAllSentMessages()
+    public function loadAllSentMsg()
     {
         $ret = [];
-
-        //TODO:finish this function
-        //TODO:It should return table of messages send by this user (date DESC)
-
-
+        $sql = "SELECT * FROM Messages WHERE id_sent=$this->id ORDER BY date_msg DESC";
+        $result = self::$connection->query($sql);
+        if ($result != false)
+        {
+            if ($result->num_rows > 0)
+            {
+                while ($row = $result->fetch_assoc())
+                {
+                    $message = new Message($row['id'], $row['id_sent'], $row['id_received'], $row['body_msg'], $row['date_msg'], $row['read_msg']);
+                    $ret[] = $message;
+                }
+            }
+        }
         return $ret;
     }
 
-    public function loadAllReceivedMessages()
+    public function loadAllReceivedMsg()
     {
         $ret = [];
-
-        //TODO:finish this function
-        //TODO:It should return table of messages received by this user (date DESC)
-
-
+        $sql = "SELECT * FROM Messages WHERE id_received=$this->id ORDER BY date_msg DESC";
+        $result = self::$connection->query($sql);
+        if ($result != false)
+        {
+            if ($result->num_rows > 0)
+            {
+                while ($row = $result->fetch_assoc())
+                {
+                    $message = new Message($row['id'], $row['id_sent'], $row['id_received'], $row['body_msg'], $row['date_msg'], $row['read_msg']);
+                    $ret[] = $message;
+                }
+            }
+        }
         return $ret;
     }
+
 }

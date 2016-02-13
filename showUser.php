@@ -18,10 +18,15 @@ $userToShow = User::GetUserById($userId);
 
 if($userToShow != false)
 {
+    echo("<a href='logOut.php'>Log out</a><br>");
     echo("<h1>{$userToShow->getName()}</h1>");
     echo("{$userToShow->getDescription()}<br>");
     echo("<a href='descriptionChange.php'>Edit description</a><br>");
     echo("<a href='pswChange.php'>Password change</a><br>");
+    echo("<a href='showAllMsg.php?id={$userId}'>Messages</a><br>");
+    echo("<a href='sendMsg.php?id={$userId}'>Send me message</a><br>");
+    echo("<a href='showAllUsers.php'>Show other users</a><br>");
+
 
 
     if($userToShow->getId() === $_SESSION['userId'])

@@ -23,7 +23,7 @@ echo("
 if ($_SERVER['REQUEST_METHOD'] === 'POST')
 {
 
-    if (isset($_POST['del_text']) == "DELETE")
+    if (isset($_POST['del_text']) === "DELETE")
     {
         $tweetToDelete-> removeTweet();
         header("Location: showUser.php");

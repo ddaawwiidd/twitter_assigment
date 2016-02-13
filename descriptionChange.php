@@ -12,7 +12,7 @@ echo("
     <form method='POST'>Edit your description:
     <p>
         <label>
-            <textarea name='description' rows='4'>Here is place for your new description</textarea>
+            <textarea name='description' rows='4'>Type your new description</textarea>
         </label>
     </p>
     <input type='submit' value='change'>

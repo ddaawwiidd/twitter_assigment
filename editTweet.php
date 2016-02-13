@@ -1,4 +1,5 @@
 <?php
+//all good
 require_once("./src/connection.php");
 
 if (isset($_SESSION['userId']) != true)
